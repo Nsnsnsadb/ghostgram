@@ -7,7 +7,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        runner: [macos-13, macos-15, macos-26]
+        runner: [macos-15, macos-26]
     runs-on: ${{ matrix.runner }}
     steps:
       - name: List installed Xcodes
