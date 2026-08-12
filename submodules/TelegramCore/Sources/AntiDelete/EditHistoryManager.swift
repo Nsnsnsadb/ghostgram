@@ -2,11 +2,11 @@ import Foundation
 
 
 /// Manages edit history for messages
-/// GHOSTGRAM: Stores original message text before edits for history viewing
+/// NEXORGRAM: Stores original message text before edits for history viewing
 public final class EditHistoryManager {
     public static let shared = EditHistoryManager()
     
-    private let historyKey = "ghostgram_edit_history"
+    private let historyKey = "nexorgram_edit_history"
     private var editHistory: [String: [EditRecord]] = [:]
     private let lock = NSLock()
     

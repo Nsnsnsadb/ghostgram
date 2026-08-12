@@ -45,7 +45,7 @@ public extension Message {
         return self.attributes.first(where: { $0 is DeletedMessageAttribute }) as? DeletedMessageAttribute
     }
     
-    var ghostgramIsDeleted: Bool {
+    var nexorgramIsDeleted: Bool {
         if self.isDeletedButVisible {
             return true
         }

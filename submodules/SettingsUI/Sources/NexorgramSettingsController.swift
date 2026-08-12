@@ -9,11 +9,11 @@ import AccountContext
 
 // MARK: - Entry Definition
 
-private enum GhostgramSettingsSection: Int32 {
+private enum NexorgramSettingsSection: Int32 {
     case features
 }
 
-private enum GhostgramSettingsEntry: ItemListNodeEntry {
+private enum NexorgramSettingsEntry: ItemListNodeEntry {
     case deletedMessages(PresentationTheme, String, String)
     case ghostMode(PresentationTheme, String, String)
     case misc(PresentationTheme, String, String)
@@ -23,7 +23,7 @@ private enum GhostgramSettingsEntry: ItemListNodeEntry {
     case info(PresentationTheme, String)
     
     var section: ItemListSectionId {
-        return GhostgramSettingsSection.features.rawValue
+        return NexorgramSettingsSection.features.rawValue
     }
     
     var stableId: Int32 {
@@ -45,7 +45,7 @@ private enum GhostgramSettingsEntry: ItemListNodeEntry {
         }
     }
     
-    static func ==(lhs: GhostgramSettingsEntry, rhs: GhostgramSettingsEntry) -> Bool {
+    static func ==(lhs: NexorgramSettingsEntry, rhs: NexorgramSettingsEntry) -> Bool {
         switch lhs {
         case let .deletedMessages(lhsTheme, lhsText, lhsValue):
             if case let .deletedMessages(rhsTheme, rhsText, rhsValue) = rhs,
@@ -91,12 +91,12 @@ private enum GhostgramSettingsEntry: ItemListNodeEntry {
         }
     }
     
-    static func <(lhs: GhostgramSettingsEntry, rhs: GhostgramSettingsEntry) -> Bool {
+    static func <(lhs: NexorgramSettingsEntry, rhs: NexorgramSettingsEntry) -> Bool {
         return lhs.stableId < rhs.stableId
     }
     
     func item(presentationData: ItemListPresentationData, arguments: Any) -> ListViewItem {
-        let arguments = arguments as! GhostgramSettingsControllerArguments
+        let arguments = arguments as! NexorgramSettingsControllerArguments
         switch self {
         case let .deletedMessages(_, text, value):
             return ItemListDisclosureItem(
@@ -172,7 +172,7 @@ private enum GhostgramSettingsEntry: ItemListNodeEntry {
 
 // MARK: - Arguments
 
-private final class GhostgramSettingsControllerArguments {
+private final class NexorgramSettingsControllerArguments {
     let openDeletedMessages: () -> Void
     let openGhostMode: () -> Void
     let openMisc: () -> Void
@@ -199,7 +199,7 @@ private final class GhostgramSettingsControllerArguments {
 
 // MARK: - State
 
-private struct GhostgramSettingsState: Equatable {
+private struct NexorgramSettingsState: Equatable {
     var deletedMessagesEnabled: Bool
     var ghostModeEnabled: Bool
     var ghostModeActiveCount: Int
@@ -210,8 +210,8 @@ private struct GhostgramSettingsState: Equatable {
     var voiceMorpherPresetName: String
     var sendDelayEnabled: Bool
     
-    static func current() -> GhostgramSettingsState {
-        return GhostgramSettingsState(
+    static func current() -> NexorgramSettingsState {
+        return NexorgramSettingsState(
             deletedMessagesEnabled: AntiDeleteManager.shared.isEnabled,
             ghostModeEnabled: GhostModeManager.shared.isEnabled,
             ghostModeActiveCount: GhostModeManager.shared.activeFeatureCount,
@@ -227,11 +227,11 @@ private struct GhostgramSettingsState: Equatable {
 
 // MARK: - Entries builder
 
-private func ghostgramSettingsControllerEntries(
+private func nexorgramSettingsControllerEntries(
     presentationData: PresentationData,
-    state: GhostgramSettingsState
-) -> [GhostgramSettingsEntry] {
-    var entries: [GhostgramSettingsEntry] = []
+    state: NexorgramSettingsState
+) -> [NexorgramSettingsEntry] {
+    var entries: [NexorgramSettingsEntry] = []
     
     // Deleted Messages
     let deletedStatus = state.deletedMessagesEnabled ? "Вкл" : "Выкл"
@@ -258,20 +258,20 @@ private func ghostgramSettingsControllerEntries(
     entries.append(.sendDelay(presentationData.theme, "Отложка сообщений", sendDelayStatus))
     
     // Info
-    entries.append(.info(presentationData.theme, "Функции конфиденциальности Ghostgram. Скрытые отметки о прочтении, обход исчезающих сообщений, обход защиты от пересылки и другое."))
+    entries.append(.info(presentationData.theme, "Функции конфиденциальности Nexorgram. Скрытые отметки о прочтении, обход исчезающих сообщений, обход защиты от пересылки и другое."))
     
     return entries
 }
 
 // MARK: - Controller
 
-public func ghostgramSettingsController(context: AccountContext) -> ViewController {
+public func nexorgramSettingsController(context: AccountContext) -> ViewController {
     var pushControllerImpl: ((ViewController, Bool) -> Void)?
     
-    let stateValue = Atomic(value: GhostgramSettingsState.current())
-    let statePromise = ValuePromise(GhostgramSettingsState.current(), ignoreRepeated: true)
+    let stateValue = Atomic(value: NexorgramSettingsState.current())
+    let statePromise = ValuePromise(NexorgramSettingsState.current(), ignoreRepeated: true)
     
-    let arguments = GhostgramSettingsControllerArguments(
+    let arguments = NexorgramSettingsControllerArguments(
         openDeletedMessages: {
             pushControllerImpl?(deletedMessagesController(context: context), true)
         },
@@ -297,11 +297,11 @@ public func ghostgramSettingsController(context: AccountContext) -> ViewControll
         statePromise.get()
     )
     |> map { presentationData, state -> (ItemListControllerState, (ItemListNodeState, Any)) in
-        let entries = ghostgramSettingsControllerEntries(presentationData: presentationData, state: state)
+        let entries = nexorgramSettingsControllerEntries(presentationData: presentationData, state: state)
         
         let controllerState = ItemListControllerState(
             presentationData: ItemListPresentationData(presentationData),
-            title: .text("Ghostgram"),
+            title: .text("Nexorgram"),
             leftNavigationButton: nil,
             rightNavigationButton: nil,
             backNavigationButton: ItemListBackButton(title: presentationData.strings.Common_Back),
@@ -323,7 +323,7 @@ public func ghostgramSettingsController(context: AccountContext) -> ViewControll
     // Refresh state when view appears
     controller.visibleBottomContentOffsetChanged = { _ in }
     controller.didAppear = { _ in
-        let newState = GhostgramSettingsState.current()
+        let newState = NexorgramSettingsState.current()
         let _ = stateValue.modify { _ in newState }
         statePromise.set(newState)
     }

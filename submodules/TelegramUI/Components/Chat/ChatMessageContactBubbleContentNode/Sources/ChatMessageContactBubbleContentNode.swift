@@ -298,7 +298,7 @@ public class ChatMessageContactBubbleContentNode: ChatMessageBubbleContentNode {
                         context: item.context,
                         presentationData: item.presentationData,
                         edited: edited,
-                        isDeleted: item.topMessage.ghostgramIsDeleted,
+                        isDeleted: item.topMessage.nexorgramIsDeleted,
                         impressionCount: viewCount,
                         dateText: dateText,
                         type: statusType,
